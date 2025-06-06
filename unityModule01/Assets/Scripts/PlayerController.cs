@@ -1,28 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [System.Serializable]
 public class Player
 {
     public Transform transform;
     public Rigidbody rb;
+    public Vector3 dimensions;
     public float jumpForce;
     public float groundCheckRadius;
     public float speed;
-    public Transform groundCheckTransform;
+    // public Transform groundCheckTransform;
     public bool onGround;
     public Vector3 startPosition;
     public float endPosition;
 
-    public Player(Transform child, Rigidbody rigidbody, float jumpForce, float groundCheckRadius, float speed, Transform groundCheckTransform, Vector3 startPos, float endPos)
+    public Player(Transform child, Rigidbody rigidbody, Vector3 dimensions, float jumpForce, float groundCheckRadius, float speed, Vector3 startPos, float endPos)
     {
         this.transform = child;
         this.rb = rigidbody;
+        this.dimensions = dimensions;
         this.jumpForce = jumpForce;
         this.groundCheckRadius = groundCheckRadius;
         this.speed = speed;
-        this.groundCheckTransform = groundCheckTransform;
         this.onGround = true;
         this.startPosition = startPos;
         this.endPosition = endPos;
@@ -43,7 +45,10 @@ public class PlayerController : MonoBehaviour
     private float descentStart;
     private bool fallStart;
     private Vector3 cameraStartPos;
-    public int endCounter = 0;
+    private int endCounter = 0;
+    private int SceneIndex = 0;
+    private float endWait = 0f;
+    private bool onMovingPlatform = false;
 
     void Start()
     {
@@ -52,6 +57,7 @@ public class PlayerController : MonoBehaviour
         float[] playerSpeeds = new float[] {3f, 4f, 5.5f};
         float[] groundCheckRadius = new float[] {1.95f, 0.45f, 0.25f};
         float[] endPositions = new float[] {54.4f, 58.2f, 60.2f};
+        Vector3[] dimensions = new Vector3[] {new Vector3(4f, 4f, 4f), new Vector3(1f, 1.7f, 1f), new Vector3(0.6f, 3.5f, 0.6f)};
         
         foreach(Transform child in transform)
         {
@@ -59,7 +65,7 @@ public class PlayerController : MonoBehaviour
             if (rb != null)
             {
                 // Debug.Log("index: " + j);
-                players.Add(new Player(child, rb, jumpForces[j], groundCheckRadius[j], playerSpeeds[j], child.Find("groundCheck"), rb.position, endPositions[j]));
+                players.Add(new Player(child, rb, dimensions[j], jumpForces[j], groundCheckRadius[j], playerSpeeds[j], rb.position, endPositions[j]));
                 j++;
             }
         }
@@ -69,6 +75,7 @@ public class PlayerController : MonoBehaviour
             endCircles[k].gameObject.GetComponent<Collider>().enabled = false;
         }
         cameraStartPos = cameraTransform.position;
+        SceneIndex = SceneManager.GetActiveScene().buildIndex;
     }
 
     void Update()
@@ -89,18 +96,25 @@ public class PlayerController : MonoBehaviour
         }
         Player activePlayer = players[activePlayerIndex];
 
-        //JUMP HANDLING
+        // JUMP HANDLING
         Vector3 colBoxVector = new Vector3(activePlayer.groundCheckRadius, 0.2f, activePlayer.groundCheckRadius);
-        Collider[] hitColliders = Physics.OverlapBox(activePlayer.groundCheckTransform.position, colBoxVector, activePlayer.groundCheckTransform.rotation);
+        Collider[] hitColliders = Physics.OverlapBox(activePlayer.rb.position - new Vector3(0f, activePlayer.dimensions.y / 2f - 0.1f, 0f), colBoxVector, activePlayer.rb.rotation);
         activePlayer.onGround = false;
         foreach (Collider col in hitColliders)
         {
             if (col.attachedRigidbody != activePlayer.rb)
             {
                 activePlayer.onGround = true;
+                if (col.CompareTag("MovingPlatform"))
+                    onMovingPlatform = true;
+                else if (onMovingPlatform)
+                    onMovingPlatform = false;
                 break;
             }
         }
+        if (hitColliders.Length == 0 && onMovingPlatform)
+            onMovingPlatform = false;
+        // Debug.Log("onGround: " + activePlayer.onGround + " checkPos: ");
         if (activePlayer.onGround && Input.GetKeyDown(KeyCode.Space))
             mustJump = true;
 
@@ -126,7 +140,7 @@ public class PlayerController : MonoBehaviour
             cameraTransform.position = cameraStartPos;
         }
 
-        //EXIT
+        // EXIT
         // Debug.Log("Claire pos: " + players[1].rb.position.z + " / " + players[2].rb.position.z);
         for (int p = 0; p < 3; p++)
         {
@@ -141,8 +155,25 @@ public class PlayerController : MonoBehaviour
                 endCounter -= 1;
             }
         }
+
+        // LOADING NEXT STAGE
         if (endCounter == 3)
-            Debug.Log("SUCCESS ! GOING TO NEXT STAGE");
+        {
+            if (endWait == 0f)
+            {
+                Debug.Log("SUCCESS ! GOING TO NEXT STAGE");
+                endWait = Time.time;
+                SceneIndex = (SceneIndex + 1) % 3;
+            }
+            else
+            {
+                if (Time.time - endWait > 2f)
+                {
+                    SceneManager.LoadScene(SceneIndex);
+                    endWait = 0f;
+                }
+            }
+        }
     }
 
     void FixedUpdate()
@@ -150,7 +181,6 @@ public class PlayerController : MonoBehaviour
         // PHYSIC-BASED MOVEMENT
         Rigidbody rb = players[activePlayerIndex].rb;
         float move = Input.GetAxis("Horizontal");
-        // Vector3 groundMovement = new Vector3(0f, 0f, move);
         rb.AddForce(new Vector3(0f, 0f, move * players[activePlayerIndex].speed * rb.mass / Time.fixedDeltaTime), ForceMode.Force);
         if (rb.velocity.z > players[activePlayerIndex].speed)
             rb.velocity = new Vector3(0f, rb.velocity.y, players[activePlayerIndex].speed);
