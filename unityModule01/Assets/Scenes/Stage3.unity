@@ -2038,13 +2038,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1079406537}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b9b17a8b07f24581a61a1cc4d352cbc, type: 3}
+  m_Script: {fileID: 11500000, guid: 82be338f37fc84542b9bae3b7e24873f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   startPos: {x: 0, y: 0, z: 0}
   travelVector: {x: 0, y: 0, z: 1}
   travelDistance: 6
   speed: 10
+  colBoxVector: {x: 2, y: 2.9, z: 0.2}
+  colBoxCenter: {x: 0, y: 0.3, z: 0}
 --- !u!1 &1083866785
 GameObject:
   m_ObjectHideFlags: 0
@@ -3246,6 +3248,8 @@ MonoBehaviour:
   travelVector: {x: 0, y: 1, z: 1}
   travelDistance: 12
   speed: 9
+  colBoxVector: {x: 2, y: 3.4, z: 0.2}
+  colBoxCenter: {x: 0, y: 0.6, z: 0}
 --- !u!1 &1516247637
 GameObject:
   m_ObjectHideFlags: 0
@@ -4584,7 +4588,7 @@ GameObject:
   - component: {fileID: 2119545000}
   - component: {fileID: 2119544999}
   - component: {fileID: 2119544998}
-  - component: {fileID: 2119544997}
+  - component: {fileID: 2119545001}
   m_Layer: 0
   m_Name: Cube (15)
   m_TagString: Untagged
@@ -4607,22 +4611,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 509426895}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
---- !u!114 &2119544997
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2119544995}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 093bb8bb6e3b44fc38930060747b7b94, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  startPos: {x: 0, y: 0, z: 0}
-  travelVector: {x: 0, y: 1, z: 0}
-  travelDistance: 9
-  speed: 5
 --- !u!65 &2119544998
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4694,6 +4682,24 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2119544995}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &2119545001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2119544995}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82be338f37fc84542b9bae3b7e24873f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startPos: {x: 0, y: 0, z: 0}
+  travelVector: {x: 0, y: 1, z: 0}
+  travelDistance: 10
+  speed: 5
+  colBoxVector: {x: 2, y: 2.4, z: 0.2}
+  colBoxCenter: {x: 0, y: 0.3, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

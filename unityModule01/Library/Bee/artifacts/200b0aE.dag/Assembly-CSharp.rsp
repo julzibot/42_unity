@@ -351,11 +351,11 @@
 -r:"Library/Bee/artifacts/200b0aE.dag/UnityEngine.UI.ref.dll"
 -analyzer:"/Applications/Unity/Hub/Editor/2022.3.24f1/Unity.app/Contents/Tools/Unity.SourceGenerators/Unity.Properties.SourceGenerator.dll"
 -analyzer:"/Applications/Unity/Hub/Editor/2022.3.24f1/Unity.app/Contents/Tools/Unity.SourceGenerators/Unity.SourceGenerators.dll"
-"Assets/Scripts/P1Move.cs"
-"Assets/Scripts/P2Move.cs"
-"Assets/Scripts/P3Move.cs"
-"Assets/Scripts/PlayerController.cs"
-"Assets/Scripts/TeleportScript.cs"
+"Assets/Resources/Scripts/ButtonActivate.cs"
+"Assets/Resources/Scripts/ChildButtonTrigger.cs"
+"Assets/Resources/Scripts/PlatformMove.cs"
+"Assets/Resources/Scripts/PlayerController.cs"
+"Assets/Resources/Scripts/TeleportScript.cs"
 -langversion:9.0
 
 /deterministic

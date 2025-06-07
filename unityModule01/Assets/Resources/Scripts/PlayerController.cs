@@ -131,14 +131,7 @@ public class PlayerController : MonoBehaviour
 
         // RESET
         if (Input.GetKeyDown(KeyCode.R))
-        {
-            activePlayerIndex = 0;
-            for (int r = 0; r < players.Count; r++)
-            {
-                players[r].rb.MovePosition(players[r].startPosition);
-            }
-            cameraTransform.position = cameraStartPos;
-        }
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 
         // EXIT
         // Debug.Log("Claire pos: " + players[1].rb.position.z + " / " + players[2].rb.position.z);
@@ -163,7 +156,7 @@ public class PlayerController : MonoBehaviour
             {
                 Debug.Log("SUCCESS ! GOING TO NEXT STAGE");
                 endWait = Time.time;
-                SceneIndex = (SceneIndex + 1) % 3;
+                SceneIndex = (SceneIndex + 1) % 4;
             }
             else
             {
